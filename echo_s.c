@@ -14,12 +14,14 @@
 #include <signal.h>
 #include "server_functions.h"
 
+
+
 int main(int argc, char *argv[])
 {
 	int sockfd, sockfd2, length, newsockfd, portno, pid, pid2;
 	int numPorts = 0;
-	socklen_t clilen;
-	struct sockaddr_in serv_addr, cli_addr;
+	socklen_t clilen; //Length of client address
+	struct sockaddr_in serv_addr, cli_addr; //Server and client
 	fd_set sockset;
 	char logIP[128] = "127.0.0.1"; //Default log_s IP if -logip is not detected
 	int ports[3];	
@@ -30,6 +32,12 @@ int main(int argc, char *argv[])
 	   fprintf(stderr,"ERROR, no port provided.\n");
 	   exit(1);
 	}
+	else if(argc > 6) {
+	  fprintf(stderr, "ERROR, too many arguments.\n");
+	  printf("Usage: %s <port1> [<port2> <port3>] -logip <IP> ",argv[0]);
+	  exit(1);
+	}
+	//else if(isNumber == false)
 	int i;
 	for(i = 1; i < argc; i++) {
 		if(strcmp(argv[i],"-logip") == 0){

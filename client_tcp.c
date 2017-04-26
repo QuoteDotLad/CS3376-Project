@@ -48,6 +48,10 @@ int main(int argc, char *argv[])
     printf("Please enter the message: ");
     bzero(buffer,256);
     fgets(buffer,255,stdin);
+    char *findnull;
+    if((findnull = strchr(buffer, '\n')) != NULL) *findnull = '\0';
+    else error("ERROR removing new line character"); 
+   
     n = write(sockfd,buffer,strlen(buffer));
     if (n < 0) 
          error("ERROR writing to socket");

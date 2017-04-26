@@ -43,6 +43,9 @@ int main(int argc, char *argv[])
    printf("Please enter the message: ");
    bzero(buffer,256);
    fgets(buffer,255,stdin);
+   char *findnull;
+	if((findnull = strchr(buffer, '\n')) != NULL) *findnull = '\0';
+	else error("ERROR removing new line character"); 
    n=sendto(sock, buffer, strlen(buffer),0,(const struct sockaddr *)&server,length);
 			
    if (n < 0) error("sendto");
@@ -51,8 +54,8 @@ int main(int argc, char *argv[])
    
    if (n < 0) error("recvfrom");
    
-// write(1,"Got an ack: ",12);
    write(1,buffer,n);
+   printf("\n");
    close(sock);
    return 0;
 }

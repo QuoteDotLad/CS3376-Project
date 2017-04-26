@@ -56,8 +56,10 @@ int main(int argc, char *argv[])
    while (1) {
        n = recvfrom(sock,buf,1024,0,(struct sockaddr *)&from,&fromlen);
        if (n < 0) error("recvfrom");
-       write(1,"Received a datagram: ",21);
+       printf("\n");
+       write(1,"Received a datagram: ",21);	
        write(1,buf,n);
+      
 	   // this line cleans out the fluff in the buffer
 	   // so that only the msg is printed out
        buf[n] = '\0';

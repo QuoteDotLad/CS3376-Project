@@ -37,18 +37,16 @@ void logsend(const char *buffer, const char *ipAddr, const char *logIP) { //Rece
 
 	//bzero((char *)&logserver, sizeof(logserver));
 	logserver.sin_family = AF_INET;
-	/*bcopy((char *)server->h_addr_list[0], //An array of addresses in hostent struct, #Def at bottom of it
-      	      (char *)&logserver.sin_addr.s_addr, 
-       	server->h_length);*/
-	//logserver.sin_addr.s_addr = INADDR_ANY/*inet_addr(logIP)*/;	
 	logserver.sin_port = htons(portno);
 		
 	char logmsg[256] = {0};
 	length = sizeof(struct sockaddr_in);
 		
-	strcat(logmsg, buffer);
+	strcat(logmsg, "\""); //Appending quotes
+	strcat(logmsg, buffer); //Appending actual message
+	strcat(logmsg, "\""); //Appending quotes
 	strcat(logmsg, " received from: "); 
-	strcat(logmsg, ipAddr);
+	strcat(logmsg, ipAddr); //Appending IP address of client
 
 	socklog = socket(AF_INET, SOCK_DGRAM, 0); //Creating log's socket
 	if(socklog < 0){error("ERROR creating log socket");}
@@ -59,44 +57,21 @@ void logsend(const char *buffer, const char *ipAddr, const char *logIP) { //Rece
 
 }
 
-void dostuffTCP(int sockfd, struct sockaddr_in cli_addr, const char *logIP/*, int argc, char **argv*/){
+void dostuffTCP(int sockfd, struct sockaddr_in cli_addr, const char *logIP/*, int argc, char **argv*/) {
 	int n/*, k, length, socklog, portno*/;
 	char buffer[256];
-
-	//change to 9999 upon submission
-	//portno = 9999; //move to func
       
 	bzero(buffer,256);
       
 	if ((n = read(sockfd,buffer,255)) < 0)
 		error("ERROR reading from socket");
+	
 	char ipBuf[INET_ADDRSTRLEN];	
 	const char *ipAddr = (char *)(getIP(cli_addr, ipBuf));
 	
 	logsend(buffer, ipAddr, logIP);	
-
-	//creating a socket that will be used to connect to log_s
-	//socklog = socket(AF_INET, SOCK_DGRAM, 0);
-	//if (socklog < 0) error("ERROR creating socket");
-	 
-	//logserver.sin_family = AF_INET;
-	/*int i = 0;
-	for(i = 1; i < argc; i++){
-		if(strcmp(argv[i], "-logip") == 0) {
-		logserver.sin_addr.s_addr = inet_addr(argv[i+1]);
-		break;
-		}
-	}*/
-	//logserver.sin_addr.s_addr = inet_addr(argv[argc - 1]);
-	//logserver.sin_port = htons(portno);
-	 
-	//length = sizeof(struct sockaddr_in);
-	 
-	//k = sendto(socklog, buffer, strlen(buffer), 0, (const struct sockaddr *)&logserver, length);
-	 
-	//if (k < 0) error("ERROR sending to log_s");
 	
-   
+	printf("\n");	
 	printf("Your message (TCP): %s", buffer);
    
 	if ((n = write(sockfd, buffer, 255)) < 0)
@@ -105,7 +80,7 @@ void dostuffTCP(int sockfd, struct sockaddr_in cli_addr, const char *logIP/*, in
 
 void dostuffUDP(int sockfd2, socklen_t clilen, struct sockaddr_in cli_addr, const char *logIP){
 							/*, int argc, char **argv*/
-	int n/*, k, length, socklog, portno*/;
+	int n;
 	//struct sockaddr_in logserver;
 	
     	char buffer[256];
@@ -122,21 +97,10 @@ void dostuffUDP(int sockfd2, socklen_t clilen, struct sockaddr_in cli_addr, cons
 	const char *ipAddr = (char *)(getIP(cli_addr, ipBuf)); //Getting IP address of client
 	
 	logsend(buffer, ipAddr, logIP); //Sending the message and IP to log
-
-	//creating a socket that will be used to connect to log_s
-	//socklog = socket(AF_INET, SOCK_DGRAM, 0);
-	//if (socklog < 0) error("ERROR creating socket");
 	 
-	/*logserver.sin_family = AF_INET;
-	int i = 0;
-	for(i = 1; i < argc; i++){
-		if(strcmp(argv[i], "-logip") == 0){
-		logserver.sin_addr.s_addr = inet_addr(argv[i+1]);
-		break;
-		}
-	}*/
+	//logserver.sin_family = AF_INET;
 	
-	
+	printf("\n");
 	printf("Your message (UDP): %s", buffer);
 	
 	if ((n = sendto(sockfd2, buffer, 255, 0 , (struct sockaddr *)&cli_addr, clilen)) < 0)
