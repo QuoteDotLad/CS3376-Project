@@ -13,18 +13,14 @@
 #include <stdio.h>
 #include <time.h>
 #include <arpa/inet.h>
+#include "server_functions.h"
 
-void error(const char *msg)
-{
-    perror(msg);
-    exit(0);
-}
 
 int main(int argc, char *argv[])
 {
    int sock, length, n;
    // portno should be "9999" upon submission; use "55556" for testing purposes
-   int portno = 55556;
+   int portno = 9999;
    socklen_t fromlen;
    struct sockaddr_in server;
    struct sockaddr_in from;
@@ -75,10 +71,10 @@ int main(int argc, char *argv[])
            struct tm tm = *localtime(&t);
 	   
 	   // write to the log text file
-	   fprintf(fp,"%d-%d-%d %d:%d:%d \t %s was received from %s\n",
+	   fprintf(fp,"%d-%d-%d %d:%d:%d \t %s\n",
 	   tm.tm_year+1900, tm.tm_mon+1, tm.tm_mday, 
-	   tm.tm_hour, tm.tm_min, tm.tm_sec, buf,
-	   inet_ntoa(from.sin_addr));
+	   tm.tm_hour, tm.tm_min, tm.tm_sec, buf
+	  /*inet_ntoa(from.sin_addr)*/);
 	   // close file
 	   fclose(fp);
 	   

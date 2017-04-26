@@ -11,7 +11,6 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-
 #include <signal.h>
 #include "server_functions.h"
 
@@ -21,14 +20,22 @@ int main(int argc, char *argv[])
 	socklen_t clilen;
 	struct sockaddr_in serv_addr, cli_addr;
 	fd_set sockset;
-
+	char *logIP = "127.0.0.1"; //Default log_s IP if -logip is not detected
+	
 	//checks to see if user passes a port number argument.
 	//if not, then an error mesage is displayed
 	if (argc < 2){
 	   fprintf(stderr,"ERROR, no port provided.\n");
 	   exit(1);
 	}
-	
+	//int i;
+	/*for(i = 1; i < argc; i++) {
+		if(strcmp(argv[i],"-logip") == 0){
+		logIP = argv[i+1];
+		break;
+		}
+	}*/
+		
 	length = sizeof(serv_addr);
 	
 	//create child process
@@ -36,7 +43,9 @@ int main(int argc, char *argv[])
 	
 	//These if statements handle the multiple arguments
 	//echo_s <port1> [<port2> <port3>]
-	
+	//Need to put in loop checking for -logip at some point
+	//
+	//
 	if(pid != 0){
 		pid2 = fork();	//creation of second child process to handle other arguments
 	}
@@ -65,7 +74,7 @@ int main(int argc, char *argv[])
 		
         bzero((char *) &serv_addr, sizeof(serv_addr)); //set values in buffer to zero
 		
-		serv_addr.sin_family = AF_INET;
+	serv_addr.sin_family = AF_INET;
         serv_addr.sin_addr.s_addr = INADDR_ANY;
 		
         portno = atoi(argv[3]);
@@ -124,7 +133,7 @@ int main(int argc, char *argv[])
 				close(sockfd);
 				
 				//in server_functions
-				dostuffTCP(newsockfd);
+				dostuffTCP(newsockfd, cli_addr, logIP/*, argc, argv*/);
 				exit(0);
 			}
 			close(newsockfd);
@@ -137,7 +146,7 @@ int main(int argc, char *argv[])
 			
 			if(pid == 0)
 			{
-				dostuffUDP(sockfd2, clilen, cli_addr);
+				dostuffUDP(sockfd2, clilen, cli_addr, logIP/*, argc, argv*/);
 				exit(0);
 			}
 		}
