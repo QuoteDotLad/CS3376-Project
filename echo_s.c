@@ -17,24 +17,30 @@
 int main(int argc, char *argv[])
 {
 	int sockfd, sockfd2, length, newsockfd, portno, pid, pid2;
+	int numPorts = 0;
 	socklen_t clilen;
 	struct sockaddr_in serv_addr, cli_addr;
 	fd_set sockset;
-	char *logIP = "127.0.0.1"; //Default log_s IP if -logip is not detected
-	
+	char logIP[128] = "127.0.0.1"; //Default log_s IP if -logip is not detected
+	int ports[3];	
+
 	//checks to see if user passes a port number argument.
 	//if not, then an error mesage is displayed
 	if (argc < 2){
 	   fprintf(stderr,"ERROR, no port provided.\n");
 	   exit(1);
 	}
-	//int i;
-	/*for(i = 1; i < argc; i++) {
+	int i;
+	for(i = 1; i < argc; i++) {
 		if(strcmp(argv[i],"-logip") == 0){
-		logIP = argv[i+1];
+			strcpy(logIP, argv[i+1]); //Copy given IP into logIP
 		break;
 		}
-	}*/
+		else {
+			ports[i-1] = atoi(argv[i]); //Put port #s into array
+			numPorts++;
+		}
+	}
 		
 	length = sizeof(serv_addr);
 	
@@ -42,10 +48,6 @@ int main(int argc, char *argv[])
 	pid = fork();
 	
 	//These if statements handle the multiple arguments
-	//echo_s <port1> [<port2> <port3>]
-	//Need to put in loop checking for -logip at some point
-	//
-	//
 	if(pid != 0){
 		pid2 = fork();	//creation of second child process to handle other arguments
 	}
@@ -58,7 +60,7 @@ int main(int argc, char *argv[])
 		serv_addr.sin_family = AF_INET;
 		serv_addr.sin_addr.s_addr = INADDR_ANY;
 		
-		portno = atoi(argv[2]);	 //second argument
+		portno = ports[1]; //second argument
 		
 		serv_addr.sin_port = htons(portno);
 		
@@ -77,7 +79,7 @@ int main(int argc, char *argv[])
 	serv_addr.sin_family = AF_INET;
         serv_addr.sin_addr.s_addr = INADDR_ANY;
 		
-        portno = atoi(argv[3]);
+        portno = ports[2];
         
         serv_addr.sin_port = htons(portno);
 		
@@ -96,7 +98,7 @@ int main(int argc, char *argv[])
 		serv_addr.sin_family = AF_INET;
 		serv_addr.sin_addr.s_addr = INADDR_ANY;
 		
-		portno = atoi(argv[1]);
+		portno = ports[0];
 		
 		serv_addr.sin_port = htons(portno);
 		
