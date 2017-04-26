@@ -21,17 +21,16 @@
 	exit(1);
 }
 
-const char *getIP(struct sockaddr_in cliAddr) { //gets IP address of client specified in structure
-	char *ipBuf[INET_ADDRSTRLEN]; //holds IP address
-	inet_ntop(AF_INET, &((struct sockaddr_in *)cliAddr->sin_addr), ipBuf, INET_ADDRSTRLEN); 
-	//gets IP address of client sent to function
-	return ipBuf; //Address is INET_ADDRSTRLEN length and stored in ipBuf
+const void *getIP(struct sockaddr_in cliAddr, char * ipBuf) { //gets IP address of client specified in structure
+
+	inet_ntop(AF_INET,&cliAddr.sin_addr.s_addr, ipBuf, INET_ADDRSTRLEN); 	
+
 }
 
-void logsend(const char *buffer, const char *logIP) { //Receives client IP, message they send, and 
+void logsend(const char *buffer, const char *ipAddr, const char *logIP) { //Receives client IP, message they send, and 
 	int socklog, k, portno;
 	socklen_t length;
-	struct sockaddr_in logserver, fromclient;
+	struct sockaddr_in logserver;
 	portno = 9999; //Default, expected to be changed in code from user-2
 	struct hostent *server = gethostbyname(logIP); //Gets the log server IP and fills hostent's fields
 	if(server == NULL){error("ERROR, host not found\n");}
@@ -46,8 +45,7 @@ void logsend(const char *buffer, const char *logIP) { //Receives client IP, mess
 		
 	char logmsg[256] = {0};
 	length = sizeof(struct sockaddr_in);
-	
-	printf("IP : %s", ipAddr); 
+		
 	strcat(logmsg, buffer);
 	strcat(logmsg, " received from: "); 
 	strcat(logmsg, ipAddr);
@@ -72,8 +70,8 @@ void dostuffTCP(int sockfd, struct sockaddr_in cli_addr, const char *logIP/*, in
       
 	if ((n = read(sockfd,buffer,255)) < 0)
 		error("ERROR reading from socket");
-	
-	const char *ipAddr = getIP(cli_addr);
+	char ipBuf[INET_ADDRSTRLEN];	
+	const char *ipAddr = (char *)(getIP(cli_addr, ipBuf));
 	
 	logsend(buffer, ipAddr, logIP);	
 
@@ -119,7 +117,9 @@ void dostuffUDP(int sockfd2, socklen_t clilen, struct sockaddr_in cli_addr, cons
 	
 	if ((n = recvfrom(sockfd2, buffer, 255, 0, (struct sockaddr *)&cli_addr, &clilen)) < 0)
 		error("ERROR reading (UDP)");
-	const char *ipAddr = getIP(cli_addr); //Getting IP address of client
+	
+	char ipBuf[INET_ADDRSTRLEN];
+	const char *ipAddr = (char *)(getIP(cli_addr, ipBuf)); //Getting IP address of client
 	
 	logsend(buffer, ipAddr, logIP); //Sending the message and IP to log
 
