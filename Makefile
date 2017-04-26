@@ -9,8 +9,8 @@ client_udp: client_udp.o client_functions.o
 echo_s: echo_s.o server_functions.o
 	g++ -o echo_s echo_s.c server_functions.c
 
-log_s: log_s.o
-	g++ -o log_s log_s.c
+log_s: log_s.o server_functions.o
+	g++ -o log_s log_s.c server_functions.c
 
 clean:
 	rm *.o echo_s log_s client_tcp client_udp echo.log
