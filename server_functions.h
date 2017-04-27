@@ -1,5 +1,5 @@
 /*
-header file for server_functions.c
+header file for  server_functions.c
 */
 
 void error(const char *msg);
