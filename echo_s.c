@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 		if(strcmp(argv[i],"-logip") == 0){
 			strcpy(logIP, argv[i+1]); //Copy given IP into logIP
 		
-			if (argc > 4){//checks if we have the additional logport argument ahead of logIP
+			if (argc > 4){//checks if we have the additional -logport argument ahead of logIP
 				 if(strcmp(argv[i+2], "-logport") == 0){
 					logPort = atoi(argv[i+3]); // copy given port into logPort (converted to int)
 		
