@@ -31,7 +31,7 @@ void logsend(const char *buffer, const char *ipAddr, const char *logIP, int logP
 	int socklog, k, portno;
 	socklen_t length;
 	struct sockaddr_in logserver;
-	portno = logPort; // This is port given by user via -logPort, Default is set to 9999 if no -logPort is provided by user
+	portno = logPort; // This is port given by user via -logPort, Default is set to 9999 if no -logPort is provided by user in echo_s
 	struct hostent *server = gethostbyname(logIP); //Gets the log server IP and fills hostent's fields
 	if(server == NULL){error("ERROR, host not found\n");}
 
