@@ -24,17 +24,18 @@ int main(int argc, char *argv[])
 	struct sockaddr_in serv_addr, cli_addr; //Server and client
 	fd_set sockset;
 	char logIP[128] = "127.0.0.1"; //Default log_s IP if -logip is not detected
+	
 	int ports[3];	
-
+	int logPort = 9999; // Default log_s portno if -logport is not detected
 	//checks to see if user passes a port number argument.
 	//if not, then an error mesage is displayed
 	if (argc < 2){
 	   fprintf(stderr,"ERROR, no port provided.\n");
 	   exit(1);
 	}
-	else if(argc > 6) {
+	else if(argc > 8) {
 	  fprintf(stderr, "ERROR, too many arguments.\n");
-	  printf("Usage: %s <port1> [<port2> <port3>] -logip <IP> ",argv[0]);
+	  printf("Usage: %s <port1> [<port2> <port3>] -logip <IP> -logport <port>",argv[0]);
 	  exit(1);
 	}
 	//else if(isNumber == false)
@@ -42,14 +43,21 @@ int main(int argc, char *argv[])
 	for(i = 1; i < argc; i++) {
 		if(strcmp(argv[i],"-logip") == 0){
 			strcpy(logIP, argv[i+1]); //Copy given IP into logIP
-		break;
+		
+			if (argc > 4){//checks if we have the additional logport argument ahead of logIP
+				 if(strcmp(argv[i+2], "-logport") == 0){
+					logPort = atoi(argv[i+3]); // copy given port into logPort (converted to int)
+		
+			}
+		}
+			break;
 		}
 		else {
 			ports[i-1] = atoi(argv[i]); //Put port #s into array
 			numPorts++;
 		}
 	}
-		
+
 	length = sizeof(serv_addr);
 	
 	//create child process
@@ -143,7 +151,7 @@ int main(int argc, char *argv[])
 				close(sockfd);
 				
 				//in server_functions
-				dostuffTCP(newsockfd, cli_addr, logIP/*, argc, argv*/);
+				dostuffTCP(newsockfd, cli_addr, logIP, logPort/*, argc, argv*/);
 				exit(0);
 			}
 			close(newsockfd);
@@ -156,7 +164,7 @@ int main(int argc, char *argv[])
 			
 			if(pid == 0)
 			{
-				dostuffUDP(sockfd2, clilen, cli_addr, logIP/*, argc, argv*/);
+				dostuffUDP(sockfd2, clilen, cli_addr, logIP, logPort/*, argc, argv*/);
 				exit(0);
 			}
 		}
