@@ -26,7 +26,8 @@ int main(int argc, char *argv[])
 	int sock, length, n;
    
 // portno should be "9999" upon submission; use "55556" for testing purposes
-	int portno = 9999;
+	//int portno = 9999;
+	int portno;
 	socklen_t fromlen;// length of server address
 	struct sockaddr_in server;   
 	struct sockaddr_in from;
@@ -47,13 +48,17 @@ int main(int argc, char *argv[])
 // Checks to see if port number passed as arguement
 // if not, error
 	if (argc < 2) {
+	//if(argc == 0){ - similar to what is in log_s2 - if no arg given	
 		//fprintf(stderr, "ERROR, no port provided\n");
 		fprintf(stderr, "ERROR, no port provided\nUsing default port number");
+		portno = 9999;
 		//exit(0);  
 	}
+	//if using the check if no arg given, no need for else statement
 	else if(argc > 6){
 		//fprintf(stderr, "Too many arguements.\nUsing default port number");
 		fprintf(stderr, "Too many arguments.\nUsing default port number"); 
+		portno = 9999;
 		//exit(1);   
 	}
 	else{ // Sets arg passed in as port number.
@@ -67,7 +72,7 @@ int main(int argc, char *argv[])
 				num++;
 			}
 		}
-		//alternative in case the for loop doesn't work
+		//alternative in case the for loop causes issues.
 		/*
 			portno = argv[1];
 			//I believe this will set the passed arg to the portno to be used.
@@ -75,7 +80,7 @@ int main(int argc, char *argv[])
 	}
 	
 	// convert the string into an int to save the port number
-	// no necessary for the alternative
+	// not necessary for the alternative
 	int port = (int)strcpy;
 	
 	sock=socket(AF_INET, SOCK_DGRAM, 0);    
@@ -90,19 +95,20 @@ int main(int argc, char *argv[])
    
 // changing server.sin_port=htons(atoi(argv[1])) into 
 //htons(portno) - Necessary for alternative
+	// use this if alternative used. 
 	//server.sin_port=htons(portno);
 	
-	//server.sin_port = htons(portNum);
+	// network byte conversion
+	server.sin_port = htons(portNum);
 	
 // Compare passed in port number to actual port number.
 	// not necessary for alternative.
 	if(port != portno)
 		error("Incorrect port number");
 	
-// binding step	
+// No more changes after this.
    	if (bind(sock,(struct sockaddr *)&server,length)<0)
 		error("binding");
-
    	fromlen = sizeof(struct sockaddr_in);
    	while (1) {
        	n = recvfrom(sock,buf,1024,0,(struct sockaddr*)&from,&fromlen);
