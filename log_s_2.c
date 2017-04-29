@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
    
 // portno should be "9999" upon submission; use "55556" for testing purposes
 	//int portno = 9999;
-	
+	int portno;
 	socklen_t fromlen;
 	struct sockaddr_in server;   
 	struct sockaddr_in from;
@@ -39,11 +39,12 @@ int main(int argc, char *argv[])
 // Error if no port number is provided...   
 // Port Number should be hard coded as "9999" for project purposes
 // Using Port Number "55556" for testing purposes
-// Checks to see if port number passed as arguement
-// if not, error
 	if (argc < 2) {
+	//if (argc == 0){ - No argument passed; Possibly more appropriate for case.
+	// Checks to see if argument passed in, if not, use default port.	
 		fprintf(stderr, "No port provided\n");
-		exit(0);
+		portno = 9999;
+		//exit(0);
 	}
 	
 	sock = socket(AF_INET, SOCK_DGRAM, 0);    
