@@ -37,8 +37,8 @@ int main(int argc, char *argv[])
 	FILE *fp;
 
 // array used to hold the port numbers
-	char portNum[128];  
-	int num = 0;
+	//char portNum[128];  
+	//int num = 0;
 
 // Error if no port number is provided...   
 // Port Number should be hard coded as "9999" for project purposes
@@ -47,24 +47,35 @@ int main(int argc, char *argv[])
 // Checks to see if port number passed as arguement
 // if not, error
 	if (argc < 2) {
-		fprintf(stderr, "ERROR, no port provided\n");
-		exit(0);  
+		//fprintf(stderr, "ERROR, no port provided\n");
+		fprintf(stderr, "ERROR, no port provided\nUsing default port number");
+		//exit(0);  
 	}
 	else if(argc > 6){
-		fprintf(stderr, "Too many arguments.\n"); 
-		exit(1);   
+		//fprintf(stderr, "Too many arguements.\nUsing default port number");
+		fprintf(stderr, "Too many arguments.\nUsing default port number"); 
+		//exit(1);   
 	}
-
-	for(int i =0; i < argc; i++){
-		if(strcmp(argv[i], "-logip") == 0 ){
-			break;	
+	else{ // Sets arg passed in as port number.
+		for(int i =0; i < argc; i++){
+			if(strcmp(argv[i], "-logip") == 0 ){
+				break;	
+			}
+			else{
+				//strcpy(portNum[i], argv[i]);
+				strcpy(PortNo, argv[i]); 
+				num++;
+			}
 		}
-		else{
-			strcpy(PortNo, argv[i]); 
-			num++;
+		//alternative in case the for loop doesn't work
+		/*
+			portno = argv[1];
+			//I believe this will set the passed arg to the portno to be used.
+		*/
 	}
 	
 	// convert the string into an int to save the port number
+	// no necessary for the alternative
 	int port = (int)strcpy;
 	
 	sock=socket(AF_INET, SOCK_DGRAM, 0);    
@@ -78,14 +89,17 @@ int main(int argc, char *argv[])
 	server.sin_addr.s_addr=INADDR_ANY; 
    
 // changing server.sin_port=htons(atoi(argv[1])) into 
-//htons(portno)   
-	
+//htons(portno) - Necessary for alternative
 	//server.sin_port=htons(portno);
 	
+	//server.sin_port = htons(portNum);
+	
 // Compare passed in port number to actual port number.
+	// not necessary for alternative.
 	if(port != portno)
 		error("Incorrect port number");
 	
+// binding step	
    	if (bind(sock,(struct sockaddr *)&server,length)<0)
 		error("binding");
 
