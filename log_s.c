@@ -19,7 +19,6 @@
 #include "server_functions.h"
 
 
-
 int main(int argc, char *argv[])
 {
 
@@ -38,8 +37,8 @@ int main(int argc, char *argv[])
 	FILE *fp;
 
 // array used to hold the port numbers
-	//char portNum[128];  
-	//int num = 0;
+	char portNum[128];  
+	int num = 0;
 
 // Error if no port number is provided...   
 // Port Number should be hard coded as "9999" for project purposes
@@ -62,13 +61,13 @@ int main(int argc, char *argv[])
 		//exit(1);   
 	}
 	else{ // Sets arg passed in as port number.
-		for(int i =0; i < argc; i++){
+		int i;
+		for(i = 0; i < argc; i++){
 			if(strcmp(argv[i], "-logip") == 0 ){
 				break;	
 			}
 			else{
-				//strcpy(portNum[i], argv[i]);
-				strcpy(PortNo, argv[i]); 
+				strcpy(portNum[i], argv[i]); 
 				num++;
 			}
 		}
@@ -81,7 +80,7 @@ int main(int argc, char *argv[])
 	
 	// convert the string into an int to save the port number
 	// not necessary for the alternative
-	int port = (int)strcpy;
+	int portno = (int)portNum;
 	
 	sock=socket(AF_INET, SOCK_DGRAM, 0);    
 	
@@ -94,12 +93,11 @@ int main(int argc, char *argv[])
 	server.sin_addr.s_addr=INADDR_ANY; 
    
 // changing server.sin_port=htons(atoi(argv[1])) into 
-//htons(portno) - Necessary for alternative
-	// use this if alternative used. 
-	//server.sin_port=htons(portno);
+//htons(portno)
+	server.sin_port=htons(portno);
 	
 	// network byte conversion
-	server.sin_port = htons(portNum);
+	//server.sin_port = htons(port);
 	
 // Compare passed in port number to actual port number.
 	// not necessary for alternative.
