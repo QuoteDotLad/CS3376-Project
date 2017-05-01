@@ -1,6 +1,6 @@
 /*file: echo_s.c
 **authors: Chance Ball, Rodolfo Galarza, Stephen Mercado, Brian Nguyen, Jimmy Nhes
-**date: 4/20/17
+**date: 4/30/17
 **description: this is the source code for client_funtions the first delieverable. This file will contain any functions that are relevant and useful to the client.c code and will help with elegance.
 **NOTE: The code that we wrote is a modification on the code that can be found at the following site:  http://www.linuxhowtos.org/C_C++/socket.htm
 */
