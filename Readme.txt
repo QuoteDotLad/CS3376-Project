@@ -14,7 +14,6 @@ CS3376 Semester Project by Group 3
 
 github repo: https://github.com/QuoteDotLad/CS3376-Project
 
-
 ____________________________________________________________________________________
 
 General Instructions:
