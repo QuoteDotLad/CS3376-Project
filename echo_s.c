@@ -1,6 +1,6 @@
 /*file: echo_s.c
 **authors: Chance Ball, Rodolfo Galarza, Stephen Mercado, Brian Nguyen, Jimmy Nhes
-**date: 4/30/17
+**date: 4/20/17
 **description: this is the source code for client_funtions the first delieverable. This file will contain any functions that are relevant and useful to the client.c code and will help with elegance.
 **NOTE: The code that we wrote is a modification on the code that can be found at the following site:  http://www.linuxhowtos.org/C_C++/socket.htm
 */
@@ -18,7 +18,7 @@
 
 int main(int argc, char *argv[])
 {
-	int sockTCP, sockUDP, length, newsockfd, portno, pid, pid2;
+	int sockTCP, sockUDP, length, newsockfd, portno, logportno, pid, pid2;
 	socklen_t clilen;
 	struct sockaddr_in serv_addr, cli_addr, log_addr;
 	fd_set sockset;
@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
 	for(i = 1; i < argc; i++) {
 		if(strcmp(argv[i],"-logport") == 0){
 			log_addr.sin_port = htons(atoi(argv[i+1]));
+			logportno = atoi(argv[i+1]);
 			break;
 		}
 	}
@@ -134,8 +135,20 @@ int main(int argc, char *argv[])
 	//wait for a connection from a client
 	listen(sockTCP, 5);
 	clilen = sizeof(cli_addr);
+	
+	setlogportno(logportno);
+	
+	printf("1. %d\n", getlogportno());
+	
+	/** This will capture Ctrl-c, only for the parent process **/
+	struct sigaction sVal;
+	sVal.sa_flags = SA_SIGINFO;		// Signal handler takes 3 arguments, instead of the default, 1.
+	sVal.sa_sigaction = handleSignal;	// signal handler
+	sigaction(SIGINT, &sVal, NULL);		// Register for SIGINT
+	// sigaction(SIGCHLD, &sVal, NULL);	// Register for SIGCHLD
 
 	//continuously creating child processes that perform functions
+//	printf("1.%d\n", logportno);
 	while (1)
 	{
 		FD_ZERO(&sockset);
