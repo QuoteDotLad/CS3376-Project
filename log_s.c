@@ -82,18 +82,21 @@ int main(int argc, char *argv[])
 	   // so that only the msg is printed out
        buf[n] = '\0';
 	   
+	   // open log text file
+	   fp = fopen("echo.log", "a");
+	   if (fp == NULL) {
+		   fprintf(stderr, "Can't open output file echo.log");
+		   exit(1);
+	   }
+	   
 		if (strcmp(buf, "echo_s is closing") == 0){
 			printf("\nClosing log_s from echo_s\n");
+			fprintf(fp, "echo_s is stopping");
 			close(sock);
 			exit(1);
         }
 	   
-	   // open log text file
-	   fp = fopen("echo.log", "a");
-	   if (fp == NULL) {
-		   fprintf(stderr, "Can't open output file log.txt");
-		   exit(1);
-	   }
+	   
 	   time_t t = time(NULL);
            struct tm tm = *localtime(&t);
 	   
